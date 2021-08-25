@@ -11,67 +11,87 @@ generator client {
 }
 
 model Account {
-  id              Int @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
-  email           String   @unique
-  password        String   
-  role            Role    
-  active Boolean @default(true)
-  user User?
-  facility Facility?
-
+  id        Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  role      Role    
+  active    Boolean @default(true)
+  user      User?
+  facility  Facility?
+  admin     Admin?
 }
 
 model User{
-  account       Account @relation(fields: [id], references: [id]) 
-  id     Int @id
-  visits Visit[] @relation("_uservisits")
+  account Account @relation(fields: [id], references: [id]) 
+  id      Int @id
 }
 
 model Facility{
+  account    Account @relation(fields: [id], references: [id]) 
+  id         Int @id
 
-  account       Account @relation(fields: [id], references: [id]) 
-  id     Int @id
-  place          Place? 
-  customer        Customer @relation(fields: [customerId], references: [id])
-  customerId      Int
-  visits Visit[]
+  placeName  String @unique
+
+  place      Place @relation(fields: [placeId], references: [id])
+  placeId    Int 
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId Int
+
+  visits     Visit[]
 }
 
-
+model Admin{
+  account Account @relation(fields: [id], references: [id]) 
+  id      Int @id
+}
 
 model Place{
-  id              Int @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
-  country         String
-  city            String
-  street          String
-  building        String
-  name            String @unique
-  facility        Facility @relation(fields: [facilityId], references: [id])
-  facilityId      Int
+  id        Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  country   String
+  city      String
+  street    String @db.VarChar(255)
+  building  String @db.VarChar(255)
+  facility  Facility?
 }
 
 model Customer{
-  id              Int @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
-  name            String
+  id                Int @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
+  name              String
   numberOfEmployees Int
-  facilities           Facility[]
+  facilities        Facility[]
+  lead              Boolean
+}
+
+model Visitor{
+  email         String @id @db.VarChar(255)
+  accepted      Boolean @default(false)
+  justification String? @db.VarChar(500)
+  
+  visit         Visit @relation(fields: [visitId], references: [id])
+  visitId       Int 
 }
 
 model Visit{
-  id              Int @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
-  placeId         Int
-  place           Facility @relation(fields: [facilityId], references: [id])
-  facilityId Int
-  participants User[] @relation("_uservisits")
+  id          Int @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  placeId     Int
 
+  place       Facility @relation(fields: [facilityId], references: [id])
+  facilityId  Int
+
+  visitors    Visitor[]
+  startTime   DateTime
+  finishTime  DateTime
+  title       String 
+  description String @db.VarChar(500)
 }
 
 enum Role{

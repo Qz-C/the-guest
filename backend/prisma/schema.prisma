@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Account {
+  id              Int @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+  email           String   @unique
+  password        String   
+  role            Role    
+  active Boolean @default(true)
+  user User?
+  facility Facility?
+
+}
+
+model User{
+  account       Account @relation(fields: [id], references: [id]) 
+  id     Int @id
+  visits Visit[] @relation("_uservisits")
+}
+
+model Facility{
+
+  account       Account @relation(fields: [id], references: [id]) 
+  id     Int @id
+  place          Place? 
+  customer        Customer @relation(fields: [customerId], references: [id])
+  customerId      Int
+  visits Visit[]
+}
+
+
+
+model Place{
+  id              Int @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+  country         String
+  city            String
+  street          String
+  building        String
+  name            String @unique
+  facility        Facility @relation(fields: [facilityId], references: [id])
+  facilityId      Int
+}
+
+model Customer{
+  id              Int @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+  name            String
+  numberOfEmployees Int
+  facilities           Facility[]
+}
+
+model Visit{
+  id              Int @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+  placeId         Int
+  place           Facility @relation(fields: [facilityId], references: [id])
+  facilityId Int
+  participants User[] @relation("_uservisits")
+
+}
+
+enum Role{
+  USER
+  ADMIN
+  FACILITY
+}

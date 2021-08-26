@@ -17,7 +17,7 @@ model Account {
   email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
   role      Role    
-  active    Boolean @default(true)
+  active    Boolean  @default(true)
   user      User?
   facility  Facility?
   admin     Admin?

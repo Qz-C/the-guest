@@ -6,4 +6,4 @@ export interface Account {
     password:  String | undefined,
     role:      String,
     active:    Boolean,
-  }
+}

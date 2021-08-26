@@ -6,8 +6,9 @@ import {
 
 const express = require("express");
 const app:Application = express();
-const PORT:number = 3333;
+const PORT:number = 60000;
 
 app.listen(PORT, () => {
+    
     console.log(`Server running on port ${PORT}`);
 })

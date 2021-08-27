@@ -1,14 +1,12 @@
 import { 
     Application,
-    Request,
-    Response 
 } from "express";
 
 import routes from "./routes"
 
 const express = require("express");
 const app:Application = express();
-const PORT:number = 60000;
+const PORT:number = 3333;
 app.use(express.json());
 app.use(routes);
 

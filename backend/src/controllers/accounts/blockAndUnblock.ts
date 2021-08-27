@@ -6,29 +6,20 @@ import {
     Request,
     Response 
 } from "express";
+import { isBooleanObject } from 'util/types';
 
 import { 
-    blockAndUnblockActionValidator,
     errorMessage,
 } from '../../util/validations';
 
 const prisma = new PrismaClient();
 
-    const block = async (req: Request, res: Response) => {
+    const blockAndUnblock = async (req: Request, res: Response) => {
 
-        if(!req.query.id || !req.query.action)
+        if(!req.query.id || req.body.active === undefined)
             return res.status(400).send(errorMessage("Missing required fields"));
 
-        const action = String(req.query.action);
-
-        if(!blockAndUnblockActionValidator(action))
-            return res.status(400).send(errorMessage("Invalid action"));
-
-        let performAction:boolean = false;
-        if(action.toLowerCase() === "unblock")
-            performAction = true;
-        if(action.toLowerCase() === "block")
-            performAction = false;
+        const active = Boolean(req.body.active);
 
         const id:number = Number(req.query.id);
 
@@ -40,7 +31,7 @@ const prisma = new PrismaClient();
                 id: id
             },
             data:{
-                active: performAction
+                active:active
             }
         }).then((account)=> {
             res.status(200).send(account)
@@ -53,4 +44,4 @@ const prisma = new PrismaClient();
         
     }
 
-export default block;
+export default blockAndUnblock;

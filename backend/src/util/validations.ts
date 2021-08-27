@@ -44,8 +44,3 @@ export const roleValidator = (role:string):boolean => {
     const roles:string[] = ["USER", "ADMIN", "FACILITY"]
     return roles.includes(role);
 }
-
-export const blockAndUnblockActionValidator = (action:String):boolean => {
-    const actions:string[] = ["unblock", "block"] 
-    return actions.includes(action.toLowerCase());
-}

@@ -8,7 +8,6 @@ sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendEmail = async (link:string, email:string, temporaryPassword:string):Promise<any> => {
     const result = await sendGridMail.send(getMessage(link,email,temporaryPassword))
-    console.log("email sent" , result )
     return result;
 }
 

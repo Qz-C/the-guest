@@ -34,7 +34,6 @@ const create = (req: Request, res: Response) => {
         .then((account) => {
             sendEmail("null", account.email, account.password)
                 .then((result) => {
-                    console.log(result)
                     return res.status(201).send(account);
                 })
                 .catch((error) => {

@@ -32,13 +32,13 @@ model Facility{
   account    Account @relation(fields: [id], references: [id]) 
   id         Int @id
 
-  placeName  String @unique
+  placeName  String? @unique
 
-  place      Place @relation(fields: [placeId], references: [id])
-  placeId    Int 
+  place      Place? @relation(fields: [placeId], references: [id])
+  placeId    Int?
 
-  customer   Customer @relation(fields: [customerId], references: [id])
-  customerId Int
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId Int?
 
   visits     Visit[]
 }

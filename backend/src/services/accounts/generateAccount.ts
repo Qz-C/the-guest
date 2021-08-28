@@ -18,14 +18,33 @@ const generateAccount = async (email: string, role: Role): Promise<any> => {
                 password: await hashPassword(password)
             }
     })
+
+    if(account.id){
+        insertSpecification(role,account.id)
+    }
     account.password = password;
     return account;
 }
 
+const insertSpecification = async (role: Role, id:number):Promise<any> => {
+    let specificAccount;
+    switch(role){
+        case "USER" : specificAccount = await prisma.user.create({
+                      data: {id:id}
+                      })
+                      break;
+        
+        case "ADMIN" : specificAccount = await prisma.admin.create({
+                        data: {id:id}
+                       })
+                       break;
+        
+        case "FACILITY" : specificAccount = await prisma.facility.create({
+                           data: {id:id}
+                       })
+                       break;
+    }
+    return specificAccount;
+}
+
 export default generateAccount;
-
-
-// if(error.code === "P2002" && error.meta.target == "email_unique")
-// return res.status(400).send(errorMessage("The email is already in use"));
-// else
-// return res.status(500).send(errorMessage("Oops! Something went wrong!"));

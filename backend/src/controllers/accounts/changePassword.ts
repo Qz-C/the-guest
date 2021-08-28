@@ -35,7 +35,8 @@ const create = async (req: Request, res: Response) => {
         },
         data:{
             password:await hashPassword(password),
-            firstAccess: false
+            firstAccess: false,
+            updatedAt: new Date()
         }
     }).then(() => {
         return res.status(200).send(successMessage("password updated successfully"))

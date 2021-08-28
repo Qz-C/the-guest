@@ -46,7 +46,8 @@ const prisma = new PrismaClient();
                             id:id
                         },
                         data:{
-                            role: role
+                            role: role,
+                            updatedAt: new Date()
                         }
                     }).then( async (account) => {
                         await deleteSpecification(oldRole, account.id)

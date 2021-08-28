@@ -28,7 +28,8 @@ const prisma = new PrismaClient();
                 id: id
             },
             data:{
-                active:active
+                active:active,
+                updatedAt: new Date()
             }
         }).then((account)=> {
             res.status(200).send(account)

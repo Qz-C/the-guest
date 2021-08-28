@@ -11,16 +11,17 @@ generator client {
 }
 
 model Account {
-  id        Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  email     String   @unique @db.VarChar(255)
-  password  String   @db.VarChar(255)
-  role      Role    
-  active    Boolean  @default(true)
-  user      User?
-  facility  Facility?
-  admin     Admin?
+  id          Int @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  email       String   @unique @db.VarChar(255)
+  password    String   @db.VarChar(255)
+  role        Role    
+  active      Boolean  @default(true)
+  user        User?
+  facility    Facility?
+  admin       Admin?
+  firstAccess Boolean  @default(true)
 }
 
 model User{

@@ -5,7 +5,7 @@ import {
 import {
     generateSecurePassword,
     hashPassword
-} from "../../util/security"
+} from "../../../util/security"
 
 const prisma = new PrismaClient();
 

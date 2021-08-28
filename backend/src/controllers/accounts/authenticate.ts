@@ -55,11 +55,10 @@ const prisma = new PrismaClient();
                         .send({"Access level":account.role})
                     }else
                     return res.status(401).send(errorMessage("Incorrect password"));
-   
-            }else{
-                return res.status(400).send(errorMessage("User not found"));
-            }
+            }else
+                return res.status(404).send(errorMessage("Account not found"));
         }).catch((error) => {
+            console.error(error);
             return res.status(500).send(errorMessage("Oops! Something went wrong!"));
         })
     }

@@ -6,7 +6,6 @@ import {
     Request,
     Response 
 } from "express";
-import { isBooleanObject } from 'util/types';
 
 import { 
     errorMessage,
@@ -16,12 +15,10 @@ const prisma = new PrismaClient();
 
     const blockAndUnblock = async (req: Request, res: Response) => {
 
-        if(!req.query.id || req.body.active === undefined)
+        const { id, active } : {id:number, active:boolean} = req.body;
+
+        if(!id || active === undefined)
             return res.status(400).send(errorMessage("Missing required fields"));
-
-        const active = Boolean(req.body.active);
-
-        const id:number = Number(req.query.id);
 
         if(isNaN(id))
             return res.status(400).send(errorMessage("invalid id"));
@@ -37,9 +34,10 @@ const prisma = new PrismaClient();
             res.status(200).send(account)
         }).catch((error) => {
             if(error.code === "P2025")
-                res.status(404).send(errorMessage("Account not found"));
+                return res.status(404).send(errorMessage("Account not found"));
             else
-                res.status(500).send(errorMessage("Oops! Something went wrong!"));
+                console.error(error)
+                return res.status(500).send(errorMessage("Oops! Something went wrong!"));
         })
         
     }

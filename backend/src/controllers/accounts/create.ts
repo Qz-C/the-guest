@@ -11,7 +11,7 @@ import {
     roleValidator,
 } from '../../util/validations';
 
-import generateAccount from '../../services/accounts/generateAccount'
+import generateAccount from './helpers/generateAccount'
 
 import sendEmail from "../../services/emails/sendEmail";
 

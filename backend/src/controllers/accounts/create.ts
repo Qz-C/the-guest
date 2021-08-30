@@ -14,6 +14,7 @@ import {
 import generateAccount from './helpers/generateAccount'
 
 import sendEmail from "../../services/emails/sendEmail";
+import deleteSpecification from "./helpers/deleteSpecification";
 
 const prisma = new PrismaClient();
 
@@ -42,7 +43,8 @@ const create = (req: Request, res: Response) => {
                         where: {
                             email: email
                         }
-                    }).then(() => {
+                    }).then(async (account) => {
+                        await deleteSpecification("USER", account.id)
                         return res.status(500).send(errorMessage("Oops! Something went wrong!"))
                     })
                 })

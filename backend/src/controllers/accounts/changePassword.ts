@@ -5,7 +5,7 @@ import {
     Response
 } from "express";
 
-import { hashPassword } from "../../util/security";
+import { comparedHashedPassword, hashPassword } from "../../util/security";
 
 import {
     errorMessage,
@@ -29,20 +29,35 @@ const create = async (req: Request, res: Response) => {
     if(!passwordValidator(password))
         return res.status(400).send(errorMessage("Invalid password"))
     
-    prisma.account.update({
+    prisma.account.findUnique({
         where:{
-            id:account.id
-        },
-        data:{
-            password:await hashPassword(password),
-            firstAccess: false,
-            updatedAt: new Date()
+            id: account.id
         }
-    }).then(() => {
-        return res.status(200).send(successMessage("password updated successfully"))
+    }).then( async (account) => {
+        if(account?.password)
+            if((await comparedHashedPassword(password, account?.password)))
+                res.status(400).send(errorMessage("You entered a password equals to the current one"))
+            else{
+                prisma.account.update({
+                    where:{
+                        id:account.id
+                    },
+                    data:{
+                        password:await hashPassword(password),
+                        firstAccess: false,
+                        updatedAt: new Date()
+                    }
+                }).then(() => {
+                    return res.status(200).send(successMessage("password updated successfully"))
+                }).catch((error) => {
+                    console.error(error)
+                    return res.status(500).send(errorMessage("Oops! Something went wrong!"));
+                })
+            }
     }).catch((error) => {
         console.error(error)
         return res.status(500).send(errorMessage("Oops! Something went wrong!"));
     })
+    
 }
 export default create;

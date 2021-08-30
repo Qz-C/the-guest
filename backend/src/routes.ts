@@ -25,18 +25,18 @@ routes.put("/account/changePassword", auth(allPermissions) , accountController.c
 routes.get("/account/logout", auth(allPermissions), accountController.logout);
 
 //ADMIN ONLY
-routes.post("/account/create", accountController.create);
-routes.put("/account/blockAndUnblock", accountController.blockAndUnblock);
-routes.put("/account/changeRole", accountController.changeRole);
+routes.post("/account/create",  accountController.create);
+routes.put("/account/blockAndUnblock", auth(["ADMIN"]), accountController.blockAndUnblock);
+routes.put("/account/changeRole", auth(["ADMIN"]) , accountController.changeRole);
 
-routes.post("/customer/create", customerAdminController.create);
-routes.get("/customer", customerAdminController.getById);
-routes.put("/customer/update", customerAdminController.update);
-routes.get("/customer/list", customerAdminController.list);
+routes.post("/customer/create", auth(["ADMIN"]) , customerAdminController.create);
+routes.get("/customer", auth(["ADMIN"]) , customerAdminController.getById);
+routes.put("/customer/update", auth(["ADMIN"]) , customerAdminController.update);
+routes.get("/customer/list", auth(["ADMIN"]) , customerAdminController.list);
 
-routes.put("/facility/update", facilityAdminController.update);
-routes.get("/facility", facilityAdminController.getById);
-routes.get("/facility/list", facilityAdminController.list);
+routes.put("/facility/update", auth(["ADMIN"]) , facilityAdminController.update);
+routes.get("/facility", auth(["ADMIN"]) , facilityAdminController.getById);
+routes.get("/facility/list", auth(["ADMIN"]) , facilityAdminController.list);
 
 routes.post("/place/create", placeAdminController.create);
 routes.put("/place/update", placeAdminController.update);

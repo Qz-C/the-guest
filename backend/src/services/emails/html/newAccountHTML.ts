@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 export const newAccountHTML = (link:string, email:string, temporaryPassword: string):string => {
     return `
     <!DOCTYPE html>
@@ -12,7 +14,7 @@ export const newAccountHTML = (link:string, email:string, temporaryPassword: str
                 <h4> Email: ${email} </h4>
                 <h4> Temporary password: ${temporaryPassword} </h4> 
                 <h4> Note: At the first access you must change your password </h4>
-                <a href=${link}> Go to The Guest <a>
+                <a href=${process.env.AUTH_URL}> Go to The Guest <a>
             </section>
         </body>
     </html>

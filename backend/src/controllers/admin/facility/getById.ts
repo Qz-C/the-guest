@@ -11,8 +11,12 @@ const prisma = new PrismaClient();
 
 const getById = (req: Request, res: Response) => {
 
+    let id = undefined;
 
-    const  id  : any = req.query.id;
+    if (req.authAccount !== undefined && req.authAccount.role === "FACILITY")
+        id = req.authAccount.id;
+    else
+        id = req.body.id;
 
     if(!id)
         res.status(400).send(errorMessage("Missing required params"));

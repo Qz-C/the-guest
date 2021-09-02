@@ -2,97 +2,79 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
 }
+
 
 model Account {
-  id          Int @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map(name:"create_at")
+  updatedAt   DateTime @default(now()) @map(name:"update_at")
   email       String   @unique @db.VarChar(255)
   password    String   @db.VarChar(255)
-  role        Role    
+  role        Role
   active      Boolean  @default(true)
-  user        User?
-  facility    Facility?
-  admin       Admin?
-  firstAccess Boolean  @default(true)
-}
-
-model User{
-  account Account @relation(fields: [id], references: [id]) 
-  id      Int @id
-}
-
-model Facility{
-  account    Account @relation(fields: [id], references: [id]) 
-  id         Int @id
-
-  placeName  String? @unique
-
-  place      Place? @relation(fields: [placeId], references: [id])
-  placeId    Int?
-
-  customer   Customer? @relation(fields: [customerId], references: [id])
-  customerId Int?
-
-  visits     Visit[]
-}
-
-model Admin{
-  account Account @relation(fields: [id], references: [id]) 
-  id      Int @id
+  firstAccess Boolean  @default(true) @map(name:"first_access")
+  customer    Customer?
+  guest       Guest?
+  @@map("accounts")
 }
 
 model Place{
-  id        Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  country   String
-  city      String
-  street    String @db.VarChar(255)
-  building  String @db.VarChar(255)
-  facility  Facility?
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now()) @map(name:"create_at")
+  updatedAt  DateTime @default(now()) @map(name:"update_at")
+  country    String
+  city       String
+  street     String   @db.VarChar(255)
+  building   String?  @db.VarChar(255)
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId Int      @map(name:"customer_id")
+  visits     Visit[]
+  @@map("places")
 }
 
 model Customer{
-  id                Int @id @default(autoincrement())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now()) @map(name:"create_at")
+  updatedAt         DateTime @default(now()) @map(name:"update_at")
   name              String
-  numberOfEmployees Int
-  facilities        Facility[]
-  lead              Boolean
+  numberOfEmployees Int      @map(name:"number_of_employees") 
+  places            Place[]
+  account           Account  @relation(fields: [email], references: [email], onDelete:Cascade)
+  email             String   @db.VarChar(255)
+  @@map("customers")
 }
 
-model Visitor{
-  id            Int @id @default(autoincrement())
-  email         String  @db.VarChar(255)
-  accepted      Boolean @default(false)
-  justification String? @db.VarChar(500)
-  
-  visit         Visit @relation(fields: [visitId], references: [id])
-  visitId       Int 
+model Guest{
+  id            Int        @id @default(autoincrement())
+  account       Account    @relation(fields: [email], references: [email], onDelete:Cascade)
+  email         String     @db.VarChar(255)
+  justification String?    @db.VarChar(500)
+  accepted      Boolean    @default(false)
+  visit         Visit      @relation(fields: [visitId], references: [id], onDelete:Cascade)
+  visitId       Int        @map(name:"visit_id") 
+  @@map("guests")
 }
 
 model Visit{
-  id          Int @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-  
-  place       Facility @relation(fields: [facilityId], references: [id])
-  facilityId  Int
-
-  visitors    Visitor[]
-  startTime   DateTime
-  finishTime  DateTime
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map(name:"create_at")
+  updatedAt   DateTime @default(now()) @map(name:"update_at")
+  guests      Guest[]
+  place       Place    @relation(fields: [placeId], references:[id])
+  placeId     Int      @map(name:"place_id")
+  startTime   DateTime @map(name:"start_time")
+  finishTime  DateTime @map(name:"finish_time")
   title       String 
-  description String @db.VarChar(500)
+  description String  @db.VarChar(500)
+  @@map("visits")
 }
 
 enum Role{

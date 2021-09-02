@@ -25,7 +25,7 @@ routes.put("/account/changePassword", auth(allPermissions) , accountController.c
 routes.get("/account/logout", auth(allPermissions), accountController.logout);
 
 //ADMIN ONLY
-routes.post("/account/create", auth(["ADMIN"]), accountController.create);
+routes.post("/account/create", accountController.create);
 routes.put("/account/blockAndUnblock", auth(["ADMIN"]), accountController.blockAndUnblock);
 routes.put("/account/changeRole", auth(["ADMIN"]) , accountController.changeRole);
 

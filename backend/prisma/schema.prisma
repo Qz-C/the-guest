@@ -18,6 +18,7 @@ model Account {
   updatedAt   DateTime @default(now()) @map(name:"update_at")
   email       String   @unique @db.VarChar(255)
   password    String   @db.VarChar(255)
+  userName    String   @map(name:"user_name")
   role        Role
   active      Boolean  @default(true)
   firstAccess Boolean  @default(true) @map(name:"first_access")
@@ -44,11 +45,10 @@ model Customer{
   id                Int      @id @default(autoincrement())
   createdAt         DateTime @default(now()) @map(name:"create_at")
   updatedAt         DateTime @default(now()) @map(name:"update_at")
-  name              String
   numberOfEmployees Int      @map(name:"number_of_employees") 
   places            Place[]
   account           Account  @relation(fields: [email], references: [email], onDelete:Cascade)
-  email             String   @db.VarChar(255)
+  email             String   @unique @db.VarChar(255)
   @@map("customers")
 }
 
@@ -68,7 +68,7 @@ model Visit{
   createdAt   DateTime @default(now()) @map(name:"create_at")
   updatedAt   DateTime @default(now()) @map(name:"update_at")
   guests      Guest[]
-  place       Place    @relation(fields: [placeId], references:[id])
+  place       Place    @relation(fields: [placeId], references:[id], onDelete:Cascade)
   placeId     Int      @map(name:"place_id")
   startTime   DateTime @map(name:"start_time")
   finishTime  DateTime @map(name:"finish_time")
